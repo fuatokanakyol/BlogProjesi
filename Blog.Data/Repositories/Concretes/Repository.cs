@@ -25,19 +25,20 @@ namespace Blog.Data.Repositories.Concretes
             await Table.AddAsync(entity);
         }
 
-        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await Table.AnyAsync(predicate);
         }
 
-        public Task<int> CountAsync(Expression<Func<T, int>> predicate = null)
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null)
         {
-            throw new NotImplementedException();
+            return await Table.CountAsync(predicate);
         }
 
-        public Task DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Table.Remove(entity));
+            
         }
 
         public async Task<List<T>> GetAllAsync(Expression<Func<T,bool>> predicate=null,params Expression<Func<T, object>>[] includeProperties)
@@ -68,17 +69,18 @@ namespace Blog.Data.Repositories.Concretes
                     query = query.Include(item);
                 }
             }
-            return await query.SingleOrDefaultAsync();
+            return await query.SingleAsync();
         }
 
-        public Task<T> GetByGuidAsync(Guid id)
+        public async Task<T> GetByGuidAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await Table.FindAsync(id);
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            await Task.Run(()=>Table.Update(entity));
+            return entity;
         }
     }
 }
