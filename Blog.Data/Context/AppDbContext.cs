@@ -1,5 +1,6 @@
 ﻿using Blog.Data.Mappings;
 using Blog.Entity.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Data.Context
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser,AppRole,Guid,AppUserClaim,AppUserRole,AppUserLogin,AppRoleClaim,AppUserToken>
     {
         public AppDbContext()
         {
@@ -33,6 +34,8 @@ namespace Blog.Data.Context
             //modelBuilder.ApplyConfiguration(new ArticleMap());
             //((Tüm mappingleri bulunduğumuz assembly üzerinden hepsini çağırırız))
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            //identity işlemleri
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
