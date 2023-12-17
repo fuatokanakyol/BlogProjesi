@@ -24,9 +24,23 @@ namespace Blog.Service.Services.Concretes
 
         public IMapper Mapper { get; }
 
-        public async Task<List<ArticleDto>> GetAllArticleAsync()
+        public async Task CreateArticleAsync(ArticleAddDto articleAddDto)
         {
-            var articles= await unitOfWork.GetRepository<Article>().GetAllAsync();
+            var userId = Guid.Parse("29C9DA8D-2679-4DE3-98E6-EA743DC1F305");
+            var article = new Article
+            {
+                Title = articleAddDto.Title,
+                Content = articleAddDto.Content,
+                CategoryId = articleAddDto.CategoryId,
+                UserId=userId
+            };
+            await unitOfWork.GetRepository<Article>().AddAsync(article);
+            await unitOfWork.SaveAsync();
+        }
+
+        public async Task<List<ArticleDto>> GetAllArticlesWithCategoryNonDeletedAsync()
+        {
+            var articles= await unitOfWork.GetRepository<Article>().GetAllAsync(x=>x.IsDeleted==false,x=>x.Category);
             var map = mapper.Map<List<ArticleDto>>(articles);
             return map;
         }
