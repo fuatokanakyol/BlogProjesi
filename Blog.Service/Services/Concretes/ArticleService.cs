@@ -37,12 +37,31 @@ namespace Blog.Service.Services.Concretes
             await unitOfWork.GetRepository<Article>().AddAsync(article);
             await unitOfWork.SaveAsync();
         }
-
         public async Task<List<ArticleDto>> GetAllArticlesWithCategoryNonDeletedAsync()
         {
             var articles= await unitOfWork.GetRepository<Article>().GetAllAsync(x=>x.IsDeleted==false,x=>x.Category);
             var map = mapper.Map<List<ArticleDto>>(articles);
             return map;
+        }
+
+      
+
+        public async Task<ArticleUpdateDto> GetArticleWithIdAsync(Guid articleId)
+        {
+            var article = await unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
+            var map = mapper.Map<ArticleUpdateDto>(article);
+            return map;
+        }
+        public async Task UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)
+        {
+            var article=await unitOfWork.GetRepository<Article>().GetAsync(x=>!x.IsDeleted&&x.Id==articleUpdateDto.Id);
+            article.Title = articleUpdateDto.Title;
+            article.Content = articleUpdateDto.Content;
+            article.CategoryId = articleUpdateDto.CategoryId;
+            
+            
+            await unitOfWork.GetRepository<Article>().UpdateAsync(article);
+            await unitOfWork.SaveAsync();
         }
     }
 }
