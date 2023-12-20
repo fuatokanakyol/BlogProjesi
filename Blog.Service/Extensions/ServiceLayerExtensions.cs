@@ -2,8 +2,11 @@
 using Blog.Data.Repositories.Abstracts;
 using Blog.Data.Repositories.Concretes;
 using Blog.Data.UnitOfWorks;
+using Blog.Service.FluentValidations;
 using Blog.Service.Services.Abstractions;
 using Blog.Service.Services.Concretes;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -23,6 +26,15 @@ namespace Blog.Service.Extensions
 
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<ICategoryService, CategoryService>();
+
+            //Fluentİçin:
+            services.AddControllersWithViews().AddFluentValidation(opt=>
+            {
+                opt.RegisterValidatorsFromAssemblyContaining<ArticleValidator>();
+                opt.DisableDataAnnotationsValidation=true;
+                opt.ValidatorOptions.LanguageManager.Culture = new System.Globalization.CultureInfo("tr");
+            });
+            
 
             services.AddAutoMapper(assembly);
 
